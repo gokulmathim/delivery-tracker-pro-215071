@@ -47,7 +47,20 @@ export function DeliveriesPage() {
               </thead>
               <tbody>
                 {deliveries.map((d) => (
-                  <tr key={d.id} className="rowHover" onClick={() => nav(`/deliveries/${d.id}`)} role="button" tabIndex={0}>
+                  <tr
+                    key={d.id}
+                    className="rowHover"
+                    onClick={() => nav(`/deliveries/${d.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        nav(`/deliveries/${d.id}`);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open delivery ${d.tracking_number}`}
+                  >
                     <td style={{ fontWeight: 800 }}>{d.tracking_number}</td>
                     <td>{d.title || "—"}</td>
                     <td>

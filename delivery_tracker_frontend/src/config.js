@@ -7,19 +7,31 @@
 export function getBackendBaseUrl() {
   /**
    * Returns the HTTP base URL for the backend.
-   * Configure with REACT_APP_BACKEND_URL (e.g., http://localhost:3001).
+   *
+   * Supported env vars (preferred first):
+   * - REACT_APP_API_BASE
+   * - REACT_APP_BACKEND_URL
+   *
+   * Defaults to http://localhost:3001 for local dev.
    */
-  return (process.env.REACT_APP_BACKEND_URL || "http://localhost:3001").replace(/\/+$/, "");
+  return (process.env.REACT_APP_API_BASE || process.env.REACT_APP_BACKEND_URL || "http://localhost:3001").replace(/\/*$/, "");
 }
 
 /** PUBLIC_INTERFACE */
 export function getBackendWsBaseUrl() {
   /**
    * Returns the WS base URL for the backend websocket endpoint.
-   * Derived from backend base URL unless REACT_APP_BACKEND_WS_URL is set.
+   *
+   * Supported env vars (preferred first):
+   * - REACT_APP_WS_URL
+   *
+   * Legacy support:
+   * - REACT_APP_BACKEND_WS_URL
+   *
+   * Otherwise derived from getBackendBaseUrl() by converting http(s) -> ws(s).
    */
-  const explicit = process.env.REACT_APP_BACKEND_WS_URL;
-  if (explicit) return explicit.replace(/\/+$/, "");
+  const explicit = process.env.REACT_APP_WS_URL || process.env.REACT_APP_BACKEND_WS_URL;
+  if (explicit) return explicit.replace(/\/*$/, "");
 
   const httpBase = getBackendBaseUrl();
   // Convert http(s) -> ws(s)
